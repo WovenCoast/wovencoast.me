@@ -1,0 +1,15 @@
+{
+  "name": "wovencoast.me",
+  "version": "1.0.0",
+  "description": "The blog webpage of wovencoast",
+  "main": "wovencoast.js",
+  "scripts": {
+    "test": "node ./wovencoast.js"
+  },
+  "keywords": [
+    "webpage",
+    "blog"
+  ],
+  "author": "FlameXode",
+  "license": "ISC"
+}

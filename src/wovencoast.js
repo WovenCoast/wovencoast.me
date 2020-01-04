@@ -5,25 +5,23 @@ const childProcess = require('child_process');
 const app = new express();
 
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, './views'));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, './public')));
 
-const config = require('./config');
-Object.keys(config).forEach(key => {
-    if (typeof config[key] == "String") {
-        app.get(key, (req, res) => res.render(config[key], { req }));
-    } else if (typeof config[key] == "Object") {
-        app.get(key, (req, res) => {
-            if (typeof config[key].prerender == "function") {
-                config[key].prerender(req);
+const globals = require('./config');
+Object.keys(globals.routes).forEach((key) => {
+    app.get(key, async (req, res) => {
+        if (typeof globals.routes[key] === 'string') {
+            res.render(globals.routes[key], { req, favicon: globals.favicon });
+        } else {
+            var data = globals.routes[key];
+            if (typeof globals.routes[key].prerender === "function") {
+                data = await globals.routes[key].prerender(req, data);
             }
-            if (typeof config[key].render == "function") {
-                res.render(config[key].filename || `/${Math.random().toString().substr(3, 5)}`, { req, ...config[key].render() });
-            } else {
-                res.render(config[key].filename || `/${Math.random().toString().substr(3, 5)}`, { req, ...config[key] });
-            }
-        })
-    }
+            res.render(globals.routes[key].file, { data, req, favicon: globals.favicon });
+        }
+    });
 });
 
 app.post('/github', (req, res) => {

@@ -1,6 +1,6 @@
 module.exports = {
-    "/": {
-        filename: "index.ejs",
-        hello: "world"
+    favicon: '',
+    routes: {
+        "/": "index.ejs"
     }
 };
